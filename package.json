@@ -1,0 +1,40 @@
+{
+  "name": "spout",
+  "version": "1.0.0",
+  "description": "Procedurally generate, optimize, and modify GLSL shaders",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint lib",
+    "test": "mocha --compilers js:babel-core/register"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lasalvavida/spout.git"
+  },
+  "keywords": [
+    "spout",
+    "GLSL",
+    "AST",
+    "shader",
+    "generate",
+    "optimize",
+    "modify"
+  ],
+  "author": "Rob Taglang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lasalvavida/spout/issues"
+  },
+  "homepage": "https://github.com/lasalvavida/spout#readme",
+  "dependencies": {
+    "es6-enum": "^1.1.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.25.0",
+    "babel-eslint": "^7.2.3",
+    "babel-preset-es2015": "^6.24.1",
+    "chai": "^4.1.0",
+    "eslint": "^4.2.0",
+    "mocha": "^3.4.2"
+  }
+}
