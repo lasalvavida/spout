@@ -1,3 +1,4 @@
+import Operation from '../lib/Operation'
 import Parser from '../lib/Parser'
 import Variable from '../lib/Variable'
 import {expect} from 'Chai'
@@ -90,6 +91,68 @@ describe('Parser', function() {
       expect(output.members.length).to.equal(4)
       expect(output.qualifier).to.equal(Variable.Qualifier.VARYING)
     })
+
+    it('does nothing to a single token', function() {
+      var input = '0'
+      var output = Parser.parseInstruction(input)
+      expect(output).to.equal('0')
+    })
+
+    it('parses a declaration and assignment', function() {
+      var input = 'int i = 0'
+      var output = Parser.parseInstruction(input)
+      expect(output.type).to.equal(Variable.Type.INT)
+      expect(output.name).to.equal('i')
+      expect(output.value).to.equal('0')
+    })
+
+    it('parses an assignment to a scoped variable', function() {
+      var input = 'i = 1'
+      var scope = {
+        'i': new Variable(Variable.Type.INT, 'i')
+      }
+      var output = Parser.parseInstruction(input, scope)
+      expect(output.type).to.equal(Variable.Type.INT)
+      expect(output.name).to.equal('i')
+      expect(output.value).to.equal('1')
+    })
+
+    it('parses an assignment between scoped variables', function() {
+      var input = 'x = y'
+      var scope = {
+        'x': new Variable(Variable.Type.INT, 'x'),
+        'y': new Variable(Variable.Type.INT, 'y')
+      }
+      var output = Parser.parseInstruction(input, scope)
+      expect(output.name).to.equal('x')
+      expect(output.value.name).to.equal('y')
+    })
+
+    it('parses a negate operation', function() {
+      var input = 'int x = -y'
+      var scope = {
+        'y': new Variable(Variable.Type.INT, 'y')
+      }
+      var output = Parser.parseInstruction(input, scope)
+      expect(output.name).to.equal('x')
+      expect(output.value.type).to.equal(Operation.Type.NEGATE)
+      expect(output.value.inputs.length).to.equal(1)
+      expect(output.value.inputs[0].name).to.equal('y')
+    })
+
+    /*it('parses operations with parentheses', function() {
+      var input = '(x + 1) * 2'
+      var scope = {
+        'x': new Variable(Variable.Type.INT, 'x')
+      }
+      var output = Parser.parseInstruction(input, scope)
+      expect(output.operation).to.equal(Operation.Type.MULTIPLY)
+      expect(output.inputs.length).to.equal(2)
+      expect(output.inputs[0].operation).to.equal(Operation.Type.ADD)
+      expect(output.inputs[0].inputs[0].name).to.equal('x')
+      expect(output.inputs[0].inputs[1]).to.equal('1')
+      expect(output.inputs[1]).to.equal('2')
+    })*/
   })
 
   describe('splitBlocks', function() {
