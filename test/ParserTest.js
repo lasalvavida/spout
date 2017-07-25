@@ -140,19 +140,19 @@ describe('Parser', function() {
       expect(output.value.inputs[0].name).to.equal('y')
     })
 
-    /*it('parses operations with parentheses', function() {
+    it('parses operations with parentheses', function() {
       var input = '(x + 1) * 2'
       var scope = {
         'x': new Variable(Variable.Type.INT, 'x')
       }
       var output = Parser.parseInstruction(input, scope)
-      expect(output.operation).to.equal(Operation.Type.MULTIPLY)
+      expect(output.type).to.equal(Operation.Type.MULTIPLY)
       expect(output.inputs.length).to.equal(2)
-      expect(output.inputs[0].operation).to.equal(Operation.Type.ADD)
+      expect(output.inputs[0].type).to.equal(Operation.Type.ADD)
       expect(output.inputs[0].inputs[0].name).to.equal('x')
       expect(output.inputs[0].inputs[1]).to.equal('1')
       expect(output.inputs[1]).to.equal('2')
-    })*/
+    })
   })
 
   describe('splitBlocks', function() {
