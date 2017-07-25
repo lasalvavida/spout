@@ -1,5 +1,5 @@
 {
-  "name": "spout",
+  "name": "umbrage",
   "version": "1.0.0",
   "description": "Procedurally generate, optimize, and modify GLSL shaders",
   "main": "index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lasalvavida/spout.git"
+    "url": "git+https://github.com/lasalvavida/umbrage.git"
   },
   "keywords": [
     "spout",
@@ -23,9 +23,9 @@
   "author": "Rob Taglang",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/lasalvavida/spout/issues"
+    "url": "https://github.com/lasalvavida/umbrage/issues"
   },
-  "homepage": "https://github.com/lasalvavida/spout#readme",
+  "homepage": "https://github.com/lasalvavida/umbrage#readme",
   "dependencies": {
     "es6-enum": "^1.1.0"
   },
