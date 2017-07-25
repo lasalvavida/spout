@@ -23,6 +23,27 @@ describe('Parser', function() {
       var output = Parser.preprocess(input)
       expect(output).to.equal('int i = 1;\nint j = 2;')
     })
+
+    it('strips out single line comments', function() {
+      var input = '// A comment\n' +
+        'hello\n' +
+        '    // Another comment\n' +
+        'world\n' +
+        '\t// And another\n'
+      var output = Parser.preprocess(input)
+      expect(output).to.equal('hello\nworld')
+    })
+
+    it('strips out block comments', function() {
+      var input = 'hello\n' +
+        '/* A multiline\n' +
+        '    block\n' +
+        '    comment\n' +
+        '    */\n' +
+        'world /* inline */\n'
+      var output = Parser.preprocess(input)
+      expect(output).to.equal('hello\nworld')
+    })
   })
 
   describe('parseInstruction', function() {
