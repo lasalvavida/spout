@@ -153,6 +153,21 @@ describe('Parser', function() {
       expect(output.inputs[0].inputs[1]).to.equal('1')
       expect(output.inputs[1]).to.equal('2')
     })
+
+    it('parses operations with nested parentheses', function() {
+      var input = '2 * ((x + 1) / 2)'
+      var scope = {
+        'x': new Variable(Variable.Type.INT, 'x')
+      }
+      var output = Parser.parseInstruction(input, scope)
+      expect(output.type).to.equal(Operation.Type.MULTIPLY)
+      expect(output.inputs[0]).to.equal('2')
+      expect(output.inputs[1].type).to.equal(Operation.Type.DIVIDE)
+      expect(output.inputs[1].inputs[0].type).to.equal(Operation.Type.ADD)
+      expect(output.inputs[1].inputs[0].inputs[0].name).to.equal('x')
+      expect(output.inputs[1].inputs[0].inputs[1]).to.equal('1')
+      expect(output.inputs[1].inputs[1]).to.equal('2')
+    })
   })
 
   describe('splitBlocks', function() {
