@@ -44,6 +44,12 @@ describe('Parser', function() {
       var output = Parser.preprocess(input)
       expect(output).to.equal('hello\nworld')
     })
+
+    it('strips out double negatives', function() {
+      var input = '!!(x == 1)'
+      var output = Parser.preprocess(input)
+      expect(output).to.equal('(x == 1)')
+    })
   })
 
   describe('parseInstruction', function() {
@@ -116,7 +122,7 @@ describe('Parser', function() {
     it('does nothing to a single token', function() {
       var input = '0'
       var output = Parser.parseInstruction(input)
-      expect(output).to.equal('0')
+      expect(output).to.equal(0)
     })
 
     it('parses a declaration and assignment', function() {
@@ -124,7 +130,7 @@ describe('Parser', function() {
       var output = Parser.parseInstruction(input)
       expect(output.type).to.equal(Variable.Type.INT)
       expect(output.name).to.equal('i')
-      expect(output.value).to.equal('0')
+      expect(output.value).to.equal(0)
     })
 
     it('parses an assignment to a scoped variable', function() {
@@ -135,7 +141,7 @@ describe('Parser', function() {
       var output = Parser.parseInstruction(input, scope)
       expect(output.type).to.equal(Variable.Type.INT)
       expect(output.name).to.equal('i')
-      expect(output.value).to.equal('1')
+      expect(output.value).to.equal(1)
     })
 
     it('parses an assignment between scoped variables', function() {
@@ -171,8 +177,8 @@ describe('Parser', function() {
       expect(output.inputs.length).to.equal(2)
       expect(output.inputs[0].type).to.equal(Operation.Type.ADD)
       expect(output.inputs[0].inputs[0].name).to.equal('x')
-      expect(output.inputs[0].inputs[1]).to.equal('1')
-      expect(output.inputs[1]).to.equal('2')
+      expect(output.inputs[0].inputs[1]).to.equal(1)
+      expect(output.inputs[1]).to.equal(2)
     })
 
     it('parses operations with nested parentheses', function() {
@@ -182,12 +188,46 @@ describe('Parser', function() {
       }
       var output = Parser.parseInstruction(input, scope)
       expect(output.type).to.equal(Operation.Type.MULTIPLY)
-      expect(output.inputs[0]).to.equal('2')
+      expect(output.inputs[0]).to.equal(2)
       expect(output.inputs[1].type).to.equal(Operation.Type.DIVIDE)
       expect(output.inputs[1].inputs[0].type).to.equal(Operation.Type.ADD)
       expect(output.inputs[1].inputs[0].inputs[0].name).to.equal('x')
-      expect(output.inputs[1].inputs[0].inputs[1]).to.equal('1')
-      expect(output.inputs[1].inputs[1]).to.equal('2')
+      expect(output.inputs[1].inputs[0].inputs[1]).to.equal(1)
+      expect(output.inputs[1].inputs[1]).to.equal(2)
+    })
+
+    it('parses a basic conditional', function() {
+      var input = 'bool result = true == false'
+      var output = Parser.parseInstruction(input)
+      expect(output.type).to.equal(Variable.Type.BOOL)
+      expect(output.value.type).to.equal(Operation.Type.EQUAL_TO)
+      expect(output.value.inputs[0]).to.equal(true)
+      expect(output.value.inputs[1]).to.equal(false)
+    })
+
+    it('parses a set of conditionals', function() {
+      var input = '(1 > 2 && 2 < 3) || (3 >= 4 && 4 <= 5)'
+      var output = Parser.parseInstruction(input)
+      expect(output.type).to.equal(Operation.Type.OR)
+      expect(output.inputs[0].type).to.equal(Operation.Type.AND)
+      expect(output.inputs[0].inputs[0].type).to.equal(Operation.Type.GREATER_THAN)
+      expect(output.inputs[0].inputs[0].inputs).to.deep.equal([1, 2])
+      expect(output.inputs[0].inputs[1].type).to.equal(Operation.Type.LESS_THAN)
+      expect(output.inputs[0].inputs[1].inputs).to.deep.equal([2, 3])
+      expect(output.inputs[1].type).to.equal(Operation.Type.AND)
+      expect(output.inputs[1].inputs[0].type).to.equal(Operation.Type.GREATER_THAN_OR_EQUAL_TO)
+      expect(output.inputs[1].inputs[0].inputs).to.deep.equal([3, 4])
+      expect(output.inputs[1].inputs[1].type).to.equal(Operation.Type.LESS_THAN_OR_EQUAL_TO)
+      expect(output.inputs[1].inputs[1].inputs).to.deep.equal([4, 5])
+    })
+
+    it('parses negation in conditionals', function() {
+      var input = '!(!(1 != 2))'
+      var output = Parser.parseInstruction(input)
+      expect(output.type).to.equal(Operation.Type.NOT)
+      expect(output.inputs[0].type).to.equal(Operation.Type.NOT)
+      expect(output.inputs[0].inputs[0].type).to.equal(Operation.Type.NOT_EQUAL_TO)
+      expect(output.inputs[0].inputs[0].inputs).to.deep.equal([1, 2])
     })
   })
 
