@@ -12,7 +12,7 @@
     "url": "git+https://github.com/lasalvavida/umbrage.git"
   },
   "keywords": [
-    "spout",
+    "umbrage",
     "GLSL",
     "AST",
     "shader",
